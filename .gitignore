@@ -1,6 +1,5 @@
-#Ignore everything
-*
-# But don't ignore these files:
-!.gitignore
-!*/Inc/
-!*/Src/
+/Drivers
+/MDK-ARM
+pid_control.ioc
+.mxproject
+mx.scratch
