@@ -13,8 +13,6 @@
 #include "BNO055_definitions.h"
 #include "pid_loop.h"
 
-extern TIM_HandleTypeDef htim1;
-
 int main(void)
 {
 	HAL_Init();
