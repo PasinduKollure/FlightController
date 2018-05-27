@@ -15,7 +15,6 @@
 
 /* Variables ---------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
-extern UART_HandleTypeDef huart2;
 static BNO bno;
 
 uint8_t BNO_I2C_Read(uint8_t regAddr){
