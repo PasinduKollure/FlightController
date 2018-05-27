@@ -12,6 +12,8 @@
 /* Variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
+TIM_HandleTypeDef htim1;
+ADC_HandleTypeDef hadc1;
 
 /** System Clock Configuration
 */
@@ -104,7 +106,7 @@ void MX_USART2_UART_Init(void)
 }
 
 /* ADC1 init function */
-static void MX_ADC1_Init(void)
+void MX_ADC1_Init(void)
 {
 
   ADC_ChannelConfTypeDef sConfig;
@@ -141,7 +143,7 @@ static void MX_ADC1_Init(void)
 }
 
 /* TIM1 init function */
-static void MX_TIM1_Init(void)
+void MX_TIM1_Init(void)
 {
 
   TIM_ClockConfigTypeDef sClockSourceConfig;
