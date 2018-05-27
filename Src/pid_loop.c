@@ -9,6 +9,8 @@
 #include "BNO055.h"
 #include "pid_loop.h"
 
+extern TIM_HandleTypeDef htim1;
+
 void pid_loop(void){
 	
 }
