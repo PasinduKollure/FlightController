@@ -24,11 +24,13 @@ int main(void)
 	MX_TIM1_Init();
 	BNO_I2C_Configure();
 	startPWM();
+	HAL_Delay(2000);
+	startMotor();
 		
-	while (1){
+	while(1){
 		BnoUpdateEuler();
 		BnoPrintEuler();
-		pid_loop();
+		//pid_loop();
 	}
 }
 

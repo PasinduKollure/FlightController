@@ -23,4 +23,5 @@ typedef struct pid {
 }PID;
 
 void startPWM(void);
+void startMotor(void);
 void pid_loop(void);
