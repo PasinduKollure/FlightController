@@ -19,7 +19,10 @@ void startPWM(void){
 }
 
 void startMotor(){
-	
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,1100);
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,1100);
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1100);
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,1100);
 }
 
 void pid_loop(void){
