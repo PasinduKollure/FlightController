@@ -5,14 +5,14 @@
  *      Author: pasindu
  */
 
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef master_configuration_H_
 #define master_configuration_H_
 #endif /* master_configuration_H_ */
-
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-
+#define DEBUG_TEST 0
 typedef enum {
 	PID_P                   = 5,
 	PID_I                   = 0,

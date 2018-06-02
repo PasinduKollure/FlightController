@@ -46,6 +46,12 @@ typedef struct PID {
 	float ePitch;
 	float eYaw;
 	
+	//  pe: previous error
+	//Unit: degrees
+	float peRoll;
+	float pePitch;
+	float peYaw;
+	
 	//Unit: degrees
 	float sumRoll;
 	float sumPitch;
@@ -55,6 +61,7 @@ typedef struct PID {
 	float tRoll;
 	float tPitch;
 	float tYaw;
+	
 }PID;
 
 typedef struct Motor {
@@ -67,5 +74,4 @@ typedef struct Motor {
 
 void startPWM(void);
 void startMotor(void);
-void anglesToTime(BNO*);
 void pid_loop(void);

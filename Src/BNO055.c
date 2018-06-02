@@ -71,22 +71,22 @@ void BNO_I2C_Configure(void){
 	HAL_Delay(500);
 }
 
-void BnoUpdateEuler(BNO* bno){
-	bno->rawEulerX = ((BNO_I2C_Read(BNO055_EULER_P_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_P_LSB_ADDR))/16.0f;
-	bno->rawEulerY = ((BNO_I2C_Read(BNO055_EULER_R_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_R_LSB_ADDR))/16.0f;
-	bno->rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR))/16.0f;
+void BnoUpdateEuler(BNO bno){
+	bno.rawEulerX = ((BNO_I2C_Read(BNO055_EULER_P_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_P_LSB_ADDR))/16.0f;
+	bno.rawEulerY = ((BNO_I2C_Read(BNO055_EULER_R_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_R_LSB_ADDR))/16.0f;
+	bno.rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR))/16.0f;
 
-	if(bno->rawEulerX > IMU_MAX_ANGLE) bno->cappedEulerX = IMU_MAX_ANGLE;
-	else if(bno->rawEulerX < -1*IMU_MAX_ANGLE) bno->cappedEulerX = -1*IMU_MAX_ANGLE;
-	else bno->cappedEulerX = bno->cappedEulerX;
+	if(bno.rawEulerX > IMU_MAX_ANGLE) bno.cappedEulerX = IMU_MAX_ANGLE;
+	else if(bno.rawEulerX < -1*IMU_MAX_ANGLE) bno.cappedEulerX = -1*IMU_MAX_ANGLE;
+	else bno.cappedEulerX = bno.cappedEulerX;
 	
-	if(bno->rawEulerY > IMU_MAX_ANGLE) bno->cappedEulerY = IMU_MAX_ANGLE;
-	else if(bno->rawEulerY < -1*IMU_MAX_ANGLE) bno->cappedEulerY = -1*IMU_MAX_ANGLE;
-	else bno->cappedEulerY = bno->cappedEulerY;
+	if(bno.rawEulerY > IMU_MAX_ANGLE) bno.cappedEulerY = IMU_MAX_ANGLE;
+	else if(bno.rawEulerY < -1*IMU_MAX_ANGLE) bno.cappedEulerY = -1*IMU_MAX_ANGLE;
+	else bno.cappedEulerY = bno.cappedEulerY;
 	
-	if(bno->rawEulerZ > IMU_MAX_ANGLE) bno->cappedEulerZ = IMU_MAX_ANGLE;
-	else if(bno->rawEulerZ < -1*IMU_MAX_ANGLE) bno->cappedEulerZ = -1*IMU_MAX_ANGLE;
-	else bno->cappedEulerZ = bno->cappedEulerZ;
+	if(bno.rawEulerZ > IMU_MAX_ANGLE) bno.cappedEulerZ = IMU_MAX_ANGLE;
+	else if(bno.rawEulerZ < -1*IMU_MAX_ANGLE) bno.cappedEulerZ = -1*IMU_MAX_ANGLE;
+	else bno.cappedEulerZ = bno.cappedEulerZ;
 }
 
 void BnoPrintEuler(void){

@@ -15,7 +15,8 @@
 
 int main(void)
 {
-	BNO* bno;
+	BNO bno;
+	BNO* bnoPtr = &bno;
 	HAL_Init();
 
 	SystemClock_Config();
