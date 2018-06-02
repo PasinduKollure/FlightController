@@ -15,6 +15,7 @@
 
 int main(void)
 {
+	BNO* bno;
 	HAL_Init();
 
 	SystemClock_Config();
@@ -28,7 +29,7 @@ int main(void)
 	startMotor();
 		
 	while(1){
-		BnoUpdateEuler();
+		BnoUpdateEuler(bno);
 		BnoPrintEuler();
 		//pid_loop();
 	}

@@ -15,16 +15,16 @@
 
 /* Struct ------------------------------------------------------------*/
 typedef struct Bno {
-	int16_t eulerX;
-	int16_t eulerY;
-	int16_t eulerZ;
+	float rawEulerX, cappedEulerX;
+	float rawEulerY, cappedEulerY;
+	float rawEulerZ, cappedEulerZ;
 }BNO;
 
 /* Functions ------------------------------------------------------------------*/
 uint8_t BNO_I2C_Read(uint8_t);
 void BNO_I2C_Write(uint8_t, uint8_t*);
 void BNO_I2C_Configure(void);
-void BnoUpdateEuler(void);
+void BnoUpdateEuler(BNO*);
 void BnoPrintEuler(void);
 
 
