@@ -41,15 +41,17 @@ typedef struct PID {
 	float cYaw;
 	
 	//   e: error (sp-c)
-	//Unit: time
+	//Unit: degrees
 	float eRoll;
 	float ePitch;
 	float eYaw;
 	
+	//Unit: degrees
 	float sumRoll;
 	float sumPitch;
 	float sumYaw;
 	
+	//Unit: time
 	float tRoll;
 	float tPitch;
 	float tYaw;

@@ -41,10 +41,9 @@ void pid_loop(void){
 	pid.cRoll   = angles->cappedEulerX;
 	pid.eRoll   = pid.cRoll - pid.spRoll;
 	pid.sumRoll = PID_P*pid.eRoll + PID_D*pid.eRoll;
-	pid.tRoll   = PULSE_MAX_PID_TIME*(pid.sumRoll/IMU_MAX_ANGLE);
 	
-	motor.oFrontLeft  = PULSE_IDLE_PERIOD + pid.tRoll;
-	motor.oFrontRight = PULSE_IDLE_PERIOD - pid.tRoll;
+	motor.oFrontLeft  = PULSE_IDLE_PERIOD + pid.sumRoll;
+	motor.oFrontRight = PULSE_IDLE_PERIOD - pid.sumRoll;
 	
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,motor.oFrontLeft);
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,motor.oFrontRight);
