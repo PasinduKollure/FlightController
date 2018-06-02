@@ -15,9 +15,9 @@
 
 /* Struct ------------------------------------------------------------*/
 typedef struct Bno {
-	int rawEulerX, cappedEulerX;
-	int rawEulerY, cappedEulerY;
-	int rawEulerZ, cappedEulerZ;
+	int16_t rawEulerX, cappedEulerX;
+	int16_t rawEulerY, cappedEulerY;
+	int16_t rawEulerZ, cappedEulerZ;
 }BNO;
 
 /* Functions ------------------------------------------------------------------*/
