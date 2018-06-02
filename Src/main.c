@@ -30,8 +30,8 @@ int main(void)
 	startMotor();
 		
 	while(1){
-		BnoUpdateEuler(bno);
-		BnoPrintEuler();
+		BnoUpdateEuler(bnoPtr);
+		BnoPrintEuler(bnoPtr);
 		//pid_loop();
 	}
 }

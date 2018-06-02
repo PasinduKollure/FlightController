@@ -11,7 +11,8 @@
 #include "master_configuration.h"
 
 extern TIM_HandleTypeDef htim1;
-BNO angles;
+static BNO bno;
+static BNO* bnoPtr = &bno;
 PID pid;
 Motor motor;
 
@@ -31,13 +32,13 @@ void startMotor(){
 
 void pid_loop(void){
 	//TO DO: receiveData()
-	BnoUpdateEuler(angles);
+	BnoUpdateEuler(bnoPtr);
 	
 	pid.spRoll  = 0;
-	pid.cRoll   = angles.cappedEulerX;
+	pid.cRoll   = bnoPtr->cappedEulerX;
 	pid.eRoll   = pid.cRoll - pid.spRoll;
 	pid.sumRoll = PID_P*(pid.eRoll) + PID_D*(pid.eRoll-pid.peRoll);
-	pid.peRoll = pid.eRoll;
+	pid.peRoll  = pid.eRoll;
 	
 	motor.oFrontLeft  = PULSE_IDLE_PERIOD + pid.sumRoll;
 	motor.oFrontRight = PULSE_IDLE_PERIOD - pid.sumRoll;

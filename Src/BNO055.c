@@ -16,7 +16,6 @@
 
 /* Variables ---------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
-static BNO bno;
 
 uint8_t BNO_I2C_Read(uint8_t regAddr){
 	uint8_t rxData = 0;
@@ -32,37 +31,37 @@ void BNO_I2C_Write(uint8_t regAddr, uint8_t* data){
 void BNO_I2C_Configure(void){
 	uint8_t data = 0x00; // sets Operating mode to CONFIG
 	BNO_I2C_Write(BNO055_OPR_MODE_ADDR,&data);
-	printf("Operating Mode set to CONFIG \n\r");
+	printf("Operating Mode set to CONFIG \r");
 	HAL_Delay(500);
 
 	data = 0x20; // resets system
 	BNO_I2C_Write(BNO055_SYS_TRIGGER_ADDR,&data);
-	printf("Set system to reset \n\r");
+	printf("Set system to reset \r");
 	HAL_Delay(500);
 
-	printf("Checking Chip ID...  \n\r");
+	printf("Checking Chip ID...  \r");
 	while (BNO_I2C_Read(BNO055_CHIP_ID_ADDR) != 0xA0){
 		HAL_Delay(30);
 	}
 
-	printf("Chip ID: %d \n\r",BNO_I2C_Read(BNO055_CHIP_ID_ADDR));
+	printf("Chip ID: %d \r",BNO_I2C_Read(BNO055_CHIP_ID_ADDR));
 	HAL_Delay(500);
 
-	printf("Chip ID Correct.. \n\r");
+	printf("Chip ID Correct.. \r");
 
 	data = 0x00; //set power mode to normal
 	BNO_I2C_Write(BNO055_PWR_MODE_ADDR,&data);
-	printf("Power mode set to Normal.. \n\r");
+	printf("Power mode set to Normal.. \r");
 	HAL_Delay(500);
 
 	data = 0x00; // Register page ID set to page 0
 	BNO_I2C_Write(BNO055_PAGE_ID_ADDR,&data);
-	printf("Register page set to Page 0.. \n\r");
+	printf("Register page set to Page 0.. \r");
 	HAL_Delay(500);
 
 	data = 0x00; // system no longer set to reset and internal CLK is selected
 	BNO_I2C_Write(BNO055_SYS_TRIGGER_ADDR,&data);
-	printf("System no longer set to reset.. \n\r");
+	printf("System no longer set to reset.. \r");
 	HAL_Delay(500);
 
 	data = 0x0C; // set operation mode to NDOF
@@ -71,24 +70,24 @@ void BNO_I2C_Configure(void){
 	HAL_Delay(500);
 }
 
-void BnoUpdateEuler(BNO bno){
-	bno.rawEulerX = ((BNO_I2C_Read(BNO055_EULER_P_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_P_LSB_ADDR))/16.0f;
-	bno.rawEulerY = ((BNO_I2C_Read(BNO055_EULER_R_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_R_LSB_ADDR))/16.0f;
-	bno.rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR))/16.0f;
+void BnoUpdateEuler(BNO* bno){
+	bno->rawEulerX = ((BNO_I2C_Read(BNO055_EULER_P_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_P_LSB_ADDR))/16.0f;
+	bno->rawEulerY = ((BNO_I2C_Read(BNO055_EULER_R_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_R_LSB_ADDR))/16.0f;
+	bno->rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR))/16.0f;
 
-	if(bno.rawEulerX > IMU_MAX_ANGLE) bno.cappedEulerX = IMU_MAX_ANGLE;
-	else if(bno.rawEulerX < -1*IMU_MAX_ANGLE) bno.cappedEulerX = -1*IMU_MAX_ANGLE;
-	else bno.cappedEulerX = bno.cappedEulerX;
+	if(bno->rawEulerX > IMU_MAX_ANGLE) bno->cappedEulerX = IMU_MAX_ANGLE;
+	else if(bno->rawEulerX < -1*IMU_MAX_ANGLE) bno->cappedEulerX = -1*IMU_MAX_ANGLE;
+	else bno->cappedEulerX = bno->cappedEulerX;
 	
-	if(bno.rawEulerY > IMU_MAX_ANGLE) bno.cappedEulerY = IMU_MAX_ANGLE;
-	else if(bno.rawEulerY < -1*IMU_MAX_ANGLE) bno.cappedEulerY = -1*IMU_MAX_ANGLE;
-	else bno.cappedEulerY = bno.cappedEulerY;
+	if(bno->rawEulerY > IMU_MAX_ANGLE) bno->cappedEulerY = IMU_MAX_ANGLE;
+	else if(bno->rawEulerY < -1*IMU_MAX_ANGLE) bno->cappedEulerY = -1*IMU_MAX_ANGLE;
+	else bno->cappedEulerY = bno->cappedEulerY;
 	
-	if(bno.rawEulerZ > IMU_MAX_ANGLE) bno.cappedEulerZ = IMU_MAX_ANGLE;
-	else if(bno.rawEulerZ < -1*IMU_MAX_ANGLE) bno.cappedEulerZ = -1*IMU_MAX_ANGLE;
-	else bno.cappedEulerZ = bno.cappedEulerZ;
+	if(bno->rawEulerZ > IMU_MAX_ANGLE) bno->cappedEulerZ = IMU_MAX_ANGLE;
+	else if(bno->rawEulerZ < -1*IMU_MAX_ANGLE) bno->cappedEulerZ = -1*IMU_MAX_ANGLE;
+	else bno->cappedEulerZ = bno->cappedEulerZ;
 }
 
-void BnoPrintEuler(void){
-	printf("X: %f\t Y: %f\t Z: %f\n",bno.rawEulerX,bno.rawEulerY,bno.rawEulerZ);
+void BnoPrintEuler(BNO* bno){
+	printf("X: %f\t Y: %f\t Z: %f\n",bno->rawEulerX,bno->rawEulerY,bno->rawEulerZ);
 }

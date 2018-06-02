@@ -24,7 +24,7 @@ typedef struct Bno {
 uint8_t BNO_I2C_Read(uint8_t);
 void BNO_I2C_Write(uint8_t, uint8_t*);
 void BNO_I2C_Configure(void);
-void BnoUpdateEuler(BNO);
-void BnoPrintEuler(void);
+void BnoUpdateEuler(BNO*);
+void BnoPrintEuler(BNO*);
 
 
