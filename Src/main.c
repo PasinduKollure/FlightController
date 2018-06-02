@@ -29,9 +29,9 @@ int main(void)
 	startMotor();
 		
 	while(1){
-		BnoUpdateEuler(&bno);
-		BnoPrintEuler(&bno);
-		//pid_loop();
+		//BnoUpdateEuler(&bno);
+		//BnoPrintEuler(&bno);
+		pid_loop();
 	}
 }
 
