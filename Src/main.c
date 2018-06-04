@@ -25,7 +25,7 @@ int main(void)
 	MX_TIM1_Init();
 	BNO_I2C_Configure();
 	startPWM();
-	HAL_Delay(2000);
+	HAL_Delay(1000);
 	startMotor();
 		
 	while(1){
