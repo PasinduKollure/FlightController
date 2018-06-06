@@ -14,7 +14,7 @@
 #endif /* master_configuration_H_ */
 #define DEBUG_TEST 0
 typedef enum {
-	PID_P                   = 3,
+	PID_P                   = 6,
 	PID_I                   = 0,
 	PID_D                   = 0
 }pid_constants;

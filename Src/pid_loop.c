@@ -38,7 +38,7 @@ void pid_loop(void){
 	//TO DO: receiveData()
 	BnoUpdateEuler(&bno);
 	
-	pid.spRoll  = 3;
+	pid.spRoll  = 0;
 	pid.cRoll   = bno.cappedEulerX;
 	pid.eRoll   = pid.cRoll - pid.spRoll;
 	pid.sumRoll = PID_P*(pid.eRoll) + PID_D*(pid.eRoll-pid.peRoll);
@@ -57,8 +57,8 @@ void pid_loop(void){
 	else if(motor.oFrontRight < PULSE_MIN_PERIOD)
 		motor.oFrontRight = PULSE_MIN_PERIOD;
 			
-	printf("Left Motor: %d\t Right Motor: %d \n",(int)motor.oFrontLeft,(int)motor.oFrontRight);
+	//printf("Left Motor: %d\t Right Motor: %d \n",(int)motor.oFrontLeft,(int)motor.oFrontRight);
 	
-	//__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
-	//__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
+	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
 }
