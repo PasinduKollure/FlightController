@@ -32,6 +32,7 @@ int main(void)
 		//BnoUpdateEuler(&bno);
 		//BnoPrintEuler(&bno);
 		pid_loop();
+		HAL_Delay(3);
 	}
 }
 

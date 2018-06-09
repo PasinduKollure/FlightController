@@ -28,6 +28,9 @@ typedef struct receiverData {
 } RxD;
 
 typedef struct PID {
+	
+	uint8_t prevDelay;
+	
 	//  sp: setpoint
 	//Unit: rx
 	float spRoll;
@@ -68,8 +71,8 @@ typedef struct PID {
 	
 }PID;
 
+//Final output periods
 typedef struct Motor {
-	//Final output periods
 	float oFrontLeft;
 	float oFrontRight;
 	float oRearLeft;

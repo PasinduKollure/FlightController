@@ -13,15 +13,10 @@
 #define master_configuration_H_
 #endif /* master_configuration_H_ */
 #define DEBUG_TEST 0
-typedef enum {
-	PID_P                   = 3,
-	PID_I                   = 0,
-	PID_D                   = 0
-}pid_constants;
 
 typedef enum {
 	PULSE_BUFFER_TIME       = 100,
-	PULSE_MAX_PID_TIME      = 100,
+	PULSE_MAX_PID_TIME      = 250,
 	PULSE_STOP_PERIOD       = 1000,
 	PULSE_IDLE_PERIOD       = PULSE_STOP_PERIOD + 
 							  PULSE_BUFFER_TIME + 
