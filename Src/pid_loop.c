@@ -41,7 +41,8 @@ void pid_loop(void){
 	pid.spRoll  = 0;
 	pid.cRoll   = bno.cappedEulerX;
 	pid.eRoll   = pid.cRoll - pid.spRoll;
-	pid.sumRoll = PID_P*(pid.eRoll) + PID_D*(pid.eRoll-pid.peRoll);
+	pid.inteRoll += pid.eRoll;
+	pid.sumRoll = PID_P*(pid.eRoll) + PID_D*(pid.eRoll-pid.peRoll) + PID_I*(pid.inteRoll);
 	pid.peRoll  = pid.eRoll;
 	
 	motor.oFrontLeft  = PULSE_IDLE_PERIOD + pid.sumRoll;

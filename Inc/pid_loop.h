@@ -52,6 +52,10 @@ typedef struct PID {
 	float pePitch;
 	float peYaw;
 	
+	float inteRoll;
+	float intePitch;
+	float inteYaw;
+	
 	//Unit: degrees
 	float sumRoll;
 	float sumPitch;
