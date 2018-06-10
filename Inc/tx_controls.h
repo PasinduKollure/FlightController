@@ -17,3 +17,8 @@
 #define WORD_COUNT (BYTE_COUNT/2)
 #define TURNIGY_HEADER 16416
 #define BYTE2WORD(MSB,LSB) ((MSB<<8) | LSB)
+
+typedef struct TurnigyData {
+	uint8_t rawData[BYTE_COUNT];
+	uint16_t ctrlData[WORD_COUNT];
+} TxCtrlData;

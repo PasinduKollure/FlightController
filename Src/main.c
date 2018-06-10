@@ -12,8 +12,10 @@
 #include "BNO055.h"
 #include "BNO055_definitions.h"
 #include "pid_loop.h"
+#include "tx_controls.h"
 
-extern UART_HandleTypeDef huart2;                                
+extern UART_HandleTypeDef huart3;
+extern TxCtrlData turnigy;
                                 
 int main(void)
 {
@@ -29,8 +31,9 @@ int main(void)
 	
 	BNO_I2C_Configure();
 	startPWM();
-	HAL_Delay(2000);
 	startMotor();
+	HAL_UART_Receive_DMA(&huart3, (uint8_t*)turnigy.rawData, BYTE_COUNT);
+	printf("Initialization Complete.\n");
 
 	while (1){
 
