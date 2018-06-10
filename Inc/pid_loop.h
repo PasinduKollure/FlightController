@@ -55,6 +55,12 @@ typedef struct PID {
 	float pePitch;
 	float peYaw;
 	
+	//  acc: accumilative
+	//Unit: degrees
+	float accRoll;
+	float accPitch;
+	float accYaw;
+	
 	float inteRoll;
 	float intePitch;
 	float inteYaw;
