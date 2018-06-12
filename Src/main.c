@@ -12,27 +12,31 @@
 #include "BNO055.h"
 #include "BNO055_definitions.h"
 #include "pid_loop.h"
+#include "tx_controls.h"
 
+extern UART_HandleTypeDef huart3;
+extern TxCtrlData turnigy;
+                                
 int main(void)
 {
-	BNO bno;
 	HAL_Init();
-
 	SystemClock_Config();
+
 	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_TIM1_Init();
 	MX_I2C1_Init();
 	MX_USART2_UART_Init();
-	MX_TIM1_Init();
+	MX_USART3_UART_Init();
+	
 	BNO_I2C_Configure();
 	startPWM();
-	HAL_Delay(1000);
 	startMotor();
-		
-	while(1){
-		//BnoUpdateEuler(&bno);
-		//BnoPrintEuler(&bno);
-		pid_loop();
-		HAL_Delay(3);
+
+	HAL_UART_Receive_DMA(&huart3, (uint8_t*)turnigy.rawData, BYTE_COUNT);
+	printf("Initialization Complete.\n");
+
+	while (1){
+
 	}
 }
-

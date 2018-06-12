@@ -8,9 +8,11 @@
 #include "stm32f4xx_hal.h"
 #include "BNO055.h"
 #include "pid_loop.h"
+#include "tx_controls.h"
 #include "master_configuration.h"
 
 extern TIM_HandleTypeDef htim1;
+extern TxCtrlData turnigy;
 static BNO bno;
 PID pid;
 Motor motor;
