@@ -44,7 +44,8 @@ void pid_loop(void){
 	//TO DO: receiveData()
 	BnoUpdateEuler(&bno);
 	
-	pid.spRoll  = 6;
+	//printf("%d \n", turnigy.ctrlDataDegrees);
+	pid.spRoll  = turnigy.ctrlDataDegrees;
 	pid.cRoll   = bno.cappedEulerX;
 	pid.eRoll   = pid.cRoll - pid.spRoll;
 	pid.inteRoll = pid.accRoll + PID_I*pid.eRoll;

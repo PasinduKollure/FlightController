@@ -24,19 +24,18 @@ int main(void)
 
 	MX_GPIO_Init();
 	MX_DMA_Init();
+	MX_USART3_UART_Init();
+	HAL_UART_Receive_DMA(&huart3, (uint8_t*)turnigy.rawData, BYTE_COUNT);
 	MX_TIM1_Init();
 	MX_I2C1_Init();
 	MX_USART2_UART_Init();
-	MX_USART3_UART_Init();
+	
 	
 	BNO_I2C_Configure();
 	startPWM();
 	startMotor();
 
-	HAL_UART_Receive_DMA(&huart3, (uint8_t*)turnigy.rawData, BYTE_COUNT);
-	printf("Initialization Complete.\n");
-
 	while (1){
-
+		pid_loop();
 	}
 }
