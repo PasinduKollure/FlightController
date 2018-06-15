@@ -30,7 +30,6 @@ int main(void)
 	MX_I2C1_Init();
 	MX_USART2_UART_Init();
 	
-	
 	BNO_I2C_Configure();
 	startPWM();
 	startMotor();

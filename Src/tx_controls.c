@@ -22,9 +22,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	
 	UNUSED(huart);
 	
-	for(int i=0; i<WORD_COUNT; i++){
+	for(int i=0; i<WORD_COUNT; i++)
 		turnigy.ctrlData[i] = turnigy.rawData[i*2+1] << 8 | turnigy.rawData[i*2];
-	}
-	
+		
 	turnigy.ctrlDataDegrees = ((30)*(turnigy.ctrlData[4]-1500))/500;
 }
