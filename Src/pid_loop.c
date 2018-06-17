@@ -15,6 +15,7 @@
 
 extern TIM_HandleTypeDef htim1;
 extern TxCtrlData turnigy;
+extern FaultCheck fault;
 static BNO bno;
 PID pid;
 Motor motor;
@@ -107,8 +108,14 @@ void pid_loop(void){
 		else if(motor.oFrontRight < PULSE_MIN_PERIOD)
 			motor.oFrontRight = PULSE_MIN_PERIOD;
 	#endif
-			
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
-
+		
+	if((!fault.isHeaderValid) || fault.shutdown){
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,PULSE_STOP_PERIOD);
+	}else{
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
+	}
 }

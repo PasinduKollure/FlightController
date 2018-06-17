@@ -10,6 +10,7 @@
 #include "master_configuration.h"
 
 TxCtrlData turnigy;
+FaultCheck fault;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	/*
@@ -25,5 +26,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	for(int i=0; i<WORD_COUNT; i++)
 		turnigy.ctrlData[i] = turnigy.rawData[i*2+1] << 8 | turnigy.rawData[i*2];
 		
+	if(turnigy.ctrlData[3] < PULSE_MIN_PERIOD){
+		fault.shutdown = 1;
+	}else{
+		fault.shutdown = 0;
+	}
+	
+	if(turnigy.ctrlData[0] == iBUS_HEADER){
+		fault.isHeaderValid = 1;
+	}else{
+		fault.isHeaderValid = 0;
+	}
+	
 	turnigy.ctrlDataDegrees = ((30)*(turnigy.ctrlData[4]-1500))/500;
 }
