@@ -31,15 +31,4 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	}else{
 		fault.shutdown = 0;
 	}
-	
-	if(turnigy.ctrlData[0] == iBUS_HEADER){
-		fault.isHeaderValid = 1;
-	}else{
-		fault.isHeaderValid = 0;
-	}
-	
-	turnigy.mainCtrlData[0] = ((30)*(turnigy.ctrlData[2]-1500))/500;
-	turnigy.mainCtrlData[1] = ((30)*(turnigy.ctrlData[4]-1500))/500;
-	turnigy.mainCtrlData[2] = ((30)*(turnigy.ctrlData[1]-1500))/500;
-	turnigy.mainCtrlData[3] = (turnigy.ctrlData[3]-1000);
 }

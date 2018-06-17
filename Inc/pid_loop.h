@@ -32,10 +32,11 @@ typedef struct PID {
 	uint8_t prevDelay;
 	
 	//  sp: setpoint
-	//Unit: rx
-	float spRoll;
-	float spPitch;
-	float spYaw;
+	//Unit: Degrees
+	int16_t throttle;
+	int16_t spRoll;
+	int16_t spPitch;
+	int16_t spYaw;
 	
 	//   c: current; 
 	//Unit: degrees
@@ -88,5 +89,7 @@ typedef struct Motor {
 void startPWM(void);
 void startMotor(void);
 void pid_loop(void);
-static void pidCalculation(float,float,float);
+static void pidCalculation(uint16_t,uint16_t,uint16_t);
+static void pidGetCtrlData(void);
+inline static void motorLimiter(Motor*);
 static void shutdownProcedure(void);

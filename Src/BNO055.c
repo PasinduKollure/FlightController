@@ -78,15 +78,15 @@ void BnoUpdateEuler(BNO* bno){
 	bno->rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR));
 	bno->rawEulerZ = bno->rawEulerZ/16;
 
-	if(bno->rawEulerX > IMU_MAX_ANGLE) bno->cappedEulerX = IMU_MAX_ANGLE;
-	else if(bno->rawEulerX < -1*IMU_MAX_ANGLE) bno->cappedEulerX = -1*IMU_MAX_ANGLE;
-	else bno->cappedEulerX = bno->rawEulerX;
+	if(bno->rawEulerX > IMU_MAX_ANGLE) bno->eulerX = IMU_MAX_ANGLE;
+	else if(bno->rawEulerX < -1*IMU_MAX_ANGLE) bno->eulerX = -1*IMU_MAX_ANGLE;
+	else bno->eulerX = bno->rawEulerX;
 	
-	if(bno->rawEulerY > IMU_MAX_ANGLE) bno->cappedEulerY = IMU_MAX_ANGLE;
-	else if(bno->rawEulerY < -1*IMU_MAX_ANGLE) bno->cappedEulerY = -1*IMU_MAX_ANGLE;
-	else bno->cappedEulerY = bno->rawEulerY;
+	if(bno->rawEulerY > IMU_MAX_ANGLE) bno->eulerY = IMU_MAX_ANGLE;
+	else if(bno->rawEulerY < -1*IMU_MAX_ANGLE) bno->eulerY = -1*IMU_MAX_ANGLE;
+	else bno->eulerY = bno->rawEulerY;
 }
 
 void BnoPrintEuler(BNO* bno){
-	printf("X: %d\t Y: %d\t Z: %d\n",bno->cappedEulerX,bno->cappedEulerY,bno->rawEulerZ);
+	printf("X: %d\t Y: %d\t Z: %d\n",bno->eulerX,bno->eulerY,bno->rawEulerZ);
 }
