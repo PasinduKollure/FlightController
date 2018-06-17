@@ -28,3 +28,8 @@ typedef enum {
 typedef enum {
 	IMU_MAX_ANGLE           = 45
 }imu_conditions;
+
+typedef struct FaultCheck{
+	uint8_t isHeaderValid;
+	uint8_t shutdown;
+}FaultCheck;
