@@ -22,5 +22,4 @@
 typedef struct TurnigyData {
 	uint8_t rawData[BYTE_COUNT];
 	uint16_t ctrlData[WORD_COUNT];
-	uint16_t mainCtrlData[4];
 } TxCtrlData;
