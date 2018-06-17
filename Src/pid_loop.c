@@ -35,10 +35,6 @@ void startMotor(void){
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,PULSE_STOP_PERIOD);
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,PULSE_STOP_PERIOD);
 	HAL_Delay(1000);
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,1100);
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,1100);
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,1100);
-	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,1100);
 }
 
 void pid_loop(void){
@@ -55,8 +51,12 @@ void pid_loop(void){
 		
 	}else{
 		pidCalculation(pid.spPitch,pid.spRoll,pid.spYaw);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oRearLeft);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,motor.oFrontLeft);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,motor.oFrontRight);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oRearLeft);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oRearRight);	
+		printf("M1: %d \t M2: %d\n",(int)motor.oFrontLeft,(int)motor.oFrontRight);
+		printf("M3: %d \t M4: %d\n\n",(int)motor.oRearLeft,(int)motor.oRearRight);
 	}
 }
 
