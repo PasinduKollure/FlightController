@@ -88,3 +88,5 @@ typedef struct Motor {
 void startPWM(void);
 void startMotor(void);
 void pid_loop(void);
+static void pidCalculation(float,float,float);
+static void shutdownProcedure(void);

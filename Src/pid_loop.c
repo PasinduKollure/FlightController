@@ -31,7 +31,7 @@ void startPWM(void){
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
 }
 
-void startMotor(){
+void startMotor(void){
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,PULSE_STOP_PERIOD);
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,PULSE_STOP_PERIOD);
 	__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,PULSE_STOP_PERIOD);
@@ -46,9 +46,29 @@ void startMotor(){
 void pid_loop(void){
 	BnoUpdateEuler(&bno);
 	
+	
+	
+	
+		
+	if((!fault.isHeaderValid) || fault.shutdown){
+		//turnigy.mainCtrlData[3] = PULSE_LANDING_PERIOD;
+		//pidCalculation(0,0,0);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,PULSE_STOP_PERIOD);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,PULSE_STOP_PERIOD);
+		
+	}else{
+		pidCalculation(0,0,0); //NOTE: rx values go in here
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
+	}
+}
+
+static void pidCalculation(float rollSetPoint, float pitchSetPoint, float yawSetPoint){
 	/* ROLL */
 	#ifdef ROLL
-		pid.spRoll  = 0;
+		pid.spRoll  = rollSetPoint;
 		pid.cRoll   = bno.cappedEulerX;
 		pid.eRoll   = pid.cRoll - pid.spRoll;
 		pid.inteRoll = pid.accRoll + PID_I*pid.eRoll;
@@ -57,7 +77,7 @@ void pid_loop(void){
 		pid.accRoll = pid.inteRoll;
 	#else 
 		/* PITCH */
-		pid.spPitch  = 0;
+		pid.spPitch  = pitchSetPoint;
 		pid.cPitch   = bno.cappedEulerY;
 		pid.ePitch =  pid.cPitch - pid.spPitch;
 		pid.intePitch = pid.accPitch + PID_I*pid.ePitch;
@@ -108,14 +128,9 @@ void pid_loop(void){
 		else if(motor.oFrontRight < PULSE_MIN_PERIOD)
 			motor.oFrontRight = PULSE_MIN_PERIOD;
 	#endif
-		
-	if((!fault.isHeaderValid) || fault.shutdown){
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,PULSE_STOP_PERIOD);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,PULSE_STOP_PERIOD);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,PULSE_STOP_PERIOD);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,PULSE_STOP_PERIOD);
-	}else{
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oFrontLeft);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oFrontRight);
-	}
+}
+
+static void shutdownProcedure(void){
+	//place setpoint for roll, pitch, yaw to 0 so drone is stationary
+	//then reduce PWM to 1300 to allow drone to land gracefully
 }

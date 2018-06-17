@@ -22,7 +22,8 @@ typedef enum {
 							  PULSE_BUFFER_TIME + 
 							  PULSE_MAX_PID_TIME,
 	PULSE_MAX_PERIOD        = 1700,
-	PULSE_MIN_PERIOD        = 1100
+	PULSE_MIN_PERIOD        = 1100,
+	PULSE_LANDING_PERIOD    = 1300
 }esc_pulse;
 
 typedef enum {
