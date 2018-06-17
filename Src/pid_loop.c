@@ -11,7 +11,7 @@
 #include "tx_controls.h"
 #include "master_configuration.h"
 
-#define DEBUGx
+#define ROLLx
 
 extern TIM_HandleTypeDef htim1;
 extern TxCtrlData turnigy;
@@ -19,9 +19,9 @@ static BNO bno;
 PID pid;
 Motor motor;
 
-const float PID_P = 2.65f;
+const float PID_P = 1.65f;
 const float PID_I = 0;
-const float PID_D = 40;
+const float PID_D = 24;
 
 void startPWM(void){
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
@@ -46,7 +46,7 @@ void pid_loop(void){
 	BnoUpdateEuler(&bno);
 	
 	/* ROLL */
-	#ifdef DEBUG
+	#ifdef ROLL
 		pid.spRoll  = 0;
 		pid.cRoll   = bno.cappedEulerX;
 		pid.eRoll   = pid.cRoll - pid.spRoll;
@@ -74,7 +74,7 @@ void pid_loop(void){
 		pid.prevDelay++;
 	}
 	
-	#ifdef DEBUG
+	#ifdef ROLL
 		/*ROLL NOTE: Change motor.MOTOR# */
 		motor.oFrontLeft  = PULSE_IDLE_PERIOD + pid.sumRoll;
 		motor.oFrontRight = PULSE_IDLE_PERIOD - pid.sumRoll;
@@ -84,7 +84,7 @@ void pid_loop(void){
 		motor.oFrontRight = PULSE_IDLE_PERIOD - pid.sumPitch;
 	#endif
 	
-	#ifdef DEBUG
+	#ifdef ROLL
 		/*ROLL, NOTE: Change motor.MOTOR# */
 		if(motor.oFrontLeft > PULSE_MAX_PERIOD) 
 			motor.oFrontLeft  = PULSE_MAX_PERIOD;
