@@ -11,7 +11,7 @@
 #include "tx_controls.h"
 #include "master_configuration.h"
 
-#define DEBUG
+#define DEBUGx
 
 extern TIM_HandleTypeDef htim1;
 extern TxCtrlData turnigy;
@@ -19,9 +19,9 @@ static BNO bno;
 PID pid;
 Motor motor;
 
-const float PID_P = 1.65f;
+const float PID_P = 2.65f;
 const float PID_I = 0;
-const float PID_D = 24;
+const float PID_D = 40;
 
 void startPWM(void){
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
