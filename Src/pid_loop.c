@@ -11,6 +11,10 @@
 #include "tx_controls.h"
 #include "master_configuration.h"
 
+#define ROLL_MAX_RATE  20
+#define PITCH_MAX_RATE 20
+#define YAW_MAX_RATE   20
+
 extern TIM_HandleTypeDef htim1;
 extern TxCtrlData turnigy;
 extern FaultCheck fault;
@@ -18,9 +22,9 @@ static BNO bno;
 PID pid;
 Motor motor;
 
-const float PID_P = 1.65f;
-const float PID_I = 0;
-const float PID_D = 24;
+const float PID_P = 2.8;
+const float PID_I = 0.005;
+const float PID_D = 26;
 
 void startPWM(void){
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
@@ -54,9 +58,7 @@ void pid_loop(void){
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,motor.oFrontLeft);
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,motor.oFrontRight);
 		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,motor.oRearLeft);
-		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oRearRight);	
-		printf("M1: %d \t M2: %d\n",(int)motor.oFrontLeft,(int)motor.oFrontRight);
-		printf("M3: %d \t M4: %d\n\n",(int)motor.oRearLeft,(int)motor.oRearRight);
+		__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,motor.oRearRight);
 	}
 }
 
@@ -97,9 +99,9 @@ static void pidCalculation(uint16_t pitchSetPoint, uint16_t rollSetPoint, uint16
 static void pidGetCtrlData(void){
 	if(turnigy.ctrlData[0] == iBUS_HEADER){
 		fault.isHeaderValid = 1;
-		pid.spPitch  = ((30)*(turnigy.ctrlData[2]-1500))/500;
-		pid.spRoll   = ((30)*(turnigy.ctrlData[4]-1500))/500;
-		pid.spYaw    = ((30)*(turnigy.ctrlData[1]-1500))/500;
+		pid.spPitch  = ((PITCH_MAX_RATE)*(turnigy.ctrlData[2]-1500))/500;
+		pid.spRoll   = ((ROLL_MAX_RATE)*(turnigy.ctrlData[4]-1500))/500;
+		pid.spYaw    = ((YAW_MAX_RATE)*(turnigy.ctrlData[1]-1500))/500;
 		pid.throttle = (turnigy.ctrlData[3]-1000);
 		if(pid.throttle > 700) pid.throttle = 700;
 	}else{
