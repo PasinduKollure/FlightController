@@ -20,7 +20,7 @@ static int prevDelay;
 MotorPWM motor;
 
 const float PID_P = 2.8;
-const float PID_I = 0.005;
+const float PID_I = 0.00;
 const float PID_D = 26;
 
 void startPWM(void) {
@@ -90,10 +90,10 @@ static void pidCalculation(uint16_t pitchSetPoint, uint16_t rollSetPoint, uint16
 		prevDelay++;
 	}
 	
-	motor.oFrontLeft  =  pid.throttle - pid.pitchSum + pid.rollSum + pid.yawSum;
-	motor.oFrontRight =  pid.throttle - pid.pitchSum - pid.rollSum - pid.yawSum;
-	motor.oRearLeft   =  pid.throttle + pid.pitchSum + pid.rollSum - pid.yawSum;
-	motor.oRearRight  =  pid.throttle + pid.pitchSum - pid.rollSum + pid.yawSum;
+	motor.oFrontLeft  = pid.throttle - pid.pitchSum + pid.rollSum + pid.yawSum;
+	motor.oFrontRight = pid.throttle - pid.pitchSum - pid.rollSum - pid.yawSum;
+	motor.oRearLeft   = pid.throttle + pid.pitchSum + pid.rollSum - pid.yawSum;
+	motor.oRearRight  = pid.throttle + pid.pitchSum - pid.rollSum + pid.yawSum;
 
 	motorLimiter(&motor);
 }
