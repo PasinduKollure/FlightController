@@ -11,15 +11,6 @@
 #include "tx_controls.h"
 #include "master_configuration.h"
 
-#define MAX_ROLL_ANGLE 20
-#define MAX_PITCH_ANGLE 20
-#define MAX_YAW_ANGLE 20
-#define REST_ANGLE 3
-
-#define REST_PERIOD 1500
-#define MAX_PERIOD_DEVIATION 500
-#define THROTTLE_REST_PERIOD 1000
-
 extern TIM_HandleTypeDef htim1;
 extern TxCtrlData turnigy;
 extern FaultCheck fault;
@@ -49,8 +40,9 @@ void startMotor(void) {
 
 void pid_loop(void){
 	updateEulerAngles(&bno);
-	translateSetPoints();
-		
+	convertSetPoints();
+	pidCalculation(pid.pitchSetPoint, pid.rollSetPoint, pid.yawSetPoint);
+
 	if((!fault.isHeaderValid) || fault.shutdown) {
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, PULSE_STOP_PERIOD);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, PULSE_STOP_PERIOD);
@@ -59,23 +51,25 @@ void pid_loop(void){
 		
 	}
 	else {
-		pidCalculation(pid.pitchSetPoint, pid.rollSetPoint ,pid.yawSetPoint);
+		// pidCalculation(pid.pitchSetPoint, pid.rollSetPoint, pid.yawSetPoint);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor.oFrontLeft);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, motor.oFrontRight);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, motor.oRearLeft);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, motor.oRearRight);
 	}
+	
+	printPostPidPeriods(motor);
 }
 
 static void pidCalculation(uint16_t pitchSetPoint, uint16_t rollSetPoint, uint16_t yawSetPoint) {
 	// ROLL
-	pid.rollSetPoint = pitchSetPoint;
+	pid.rollSetPoint = rollSetPoint;
 	pid.rollError = pid.rollSetPoint - bno.eulerX;
 	pid.rollSum = PID_P * (pid.rollError) + 
 				  PID_D * (pid.rollError - pid.prevRollError) + 
 			      (pid.integratedRollError + PID_I * pid.rollError);
 	pid.integratedRollError += PID_I * pid.rollError;
-	
+
 	// PITCH
 	pid.pitchSetPoint = pitchSetPoint;
 	pid.pitchError = pid.pitchSetPoint - bno.eulerY;
@@ -96,22 +90,22 @@ static void pidCalculation(uint16_t pitchSetPoint, uint16_t rollSetPoint, uint16
 		prevDelay++;
 	}
 	
-	motor.oFrontLeft  = PULSE_BASE_TIME + pid.throttle - pid.pitchSum + pid.rollSum + pid.yawSum;
-	motor.oFrontRight = PULSE_BASE_TIME + pid.throttle - pid.pitchSum - pid.rollSum - pid.yawSum;
-	motor.oRearLeft   = PULSE_BASE_TIME + pid.throttle + pid.pitchSum + pid.rollSum - pid.yawSum;
-	motor.oRearRight  = PULSE_BASE_TIME + pid.throttle + pid.pitchSum - pid.rollSum + pid.yawSum;
+	motor.oFrontLeft  =  pid.throttle - pid.pitchSum + pid.rollSum + pid.yawSum;
+	motor.oFrontRight =  pid.throttle - pid.pitchSum - pid.rollSum - pid.yawSum;
+	motor.oRearLeft   =  pid.throttle + pid.pitchSum + pid.rollSum - pid.yawSum;
+	motor.oRearRight  =  pid.throttle + pid.pitchSum - pid.rollSum + pid.yawSum;
 
 	motorLimiter(&motor);
 }
 
-static void translateSetPoints(void) {
+static void convertSetPoints(void) {
 	if(turnigy.ctrlData[HEADER_INDEX] == iBUS_HEADER){
 		fault.isHeaderValid = 1;
-		//angle = MAX_ANGLE*((ctrl - 1500) / 500)
+		//setPoint (angle) = MAX_ANGLE*((ctrl - 1500) / 500)
 		pid.pitchSetPoint = MAX_PITCH_ANGLE * ((turnigy.ctrlData[PITCH_INDEX] - REST_PERIOD) / MAX_PERIOD_DEVIATION);
 		pid.rollSetPoint = MAX_ROLL_ANGLE * ((turnigy.ctrlData[ROLL_INDEX] - REST_PERIOD) / MAX_PERIOD_DEVIATION);
 		pid.yawSetPoint = MAX_YAW_ANGLE * ((turnigy.ctrlData[YAW_INDEX] - REST_PERIOD) / MAX_PERIOD_DEVIATION);
-		pid.throttle = (turnigy.ctrlData[THROTTLE_INDEX] - THROTTLE_REST_PERIOD);
+		pid.throttle = turnigy.ctrlData[THROTTLE_INDEX];
 		
 		if( (pid.rollSetPoint > -1 * REST_ANGLE) && (pid.rollSetPoint < REST_ANGLE) )
 			pid.rollSetPoint = 0;
@@ -122,8 +116,10 @@ static void translateSetPoints(void) {
 		if( (pid.yawSetPoint > -1 * REST_ANGLE) && (pid.yawSetPoint < REST_ANGLE) )
 			pid.yawSetPoint = 0;
 
-		if(pid.throttle > 700) 
-			pid.throttle = 700;
+		if(pid.throttle > MAX_THROTTLE) 
+			pid.throttle = MAX_THROTTLE;
+		else if(pid.throttle < PULSE_MIN_PERIOD)
+			pid.throttle = PULSE_MIN_PERIOD;
 	}
 	else {
 		fault.isHeaderValid = 0;
@@ -134,21 +130,32 @@ static void translateSetPoints(void) {
 	}
 }
 
-static void shutdownProcedure(void) {
-	//place setpoint for roll, pitch, yaw to 0 so drone is stationary
-	//then reduce PWM to 1300 to allow drone to land gracefully
+inline static void motorLimiter(MotorPWM *motor) {
+	if(motor->oFrontLeft > PULSE_MAX_PERIOD)
+		motor->oFrontLeft = PULSE_MAX_PERIOD;
+	else if(motor->oFrontLeft < PULSE_MIN_PERIOD)
+		motor->oFrontLeft = PULSE_MIN_PERIOD;
+	
+	if(motor->oFrontRight > PULSE_MAX_PERIOD)
+		motor->oFrontRight = PULSE_MAX_PERIOD;
+	else if(motor->oFrontRight < PULSE_MIN_PERIOD)
+		motor->oFrontRight = PULSE_MIN_PERIOD;
+	
+	if(motor->oRearLeft > PULSE_MAX_PERIOD)
+		motor->oRearLeft = PULSE_MAX_PERIOD;
+	else if(motor->oRearLeft < PULSE_MIN_PERIOD)
+		motor->oRearLeft = PULSE_MIN_PERIOD;
+	
+	if(motor->oRearRight > PULSE_MAX_PERIOD)
+		motor->oRearRight = PULSE_MAX_PERIOD;
+	else if(motor->oRearRight < PULSE_MIN_PERIOD)
+		motor->oRearRight = PULSE_MIN_PERIOD;
 }
 
-inline static void motorLimiter(MotorPWM *motor) {
-	if(motor->oFrontLeft > PULSE_MAX_PERIOD)       motor->oFrontLeft = PULSE_MAX_PERIOD;
-	else if(motor->oFrontLeft < PULSE_MIN_PERIOD)  motor->oFrontLeft = PULSE_MIN_PERIOD;
-	
-	if(motor->oFrontRight > PULSE_MAX_PERIOD)      motor->oFrontRight = PULSE_MAX_PERIOD;
-	else if(motor->oFrontRight < PULSE_MIN_PERIOD) motor->oFrontRight = PULSE_MIN_PERIOD;
-	
-	if(motor->oRearLeft > PULSE_MAX_PERIOD)		   motor->oRearLeft = PULSE_MAX_PERIOD;
-	else if(motor->oRearLeft < PULSE_MIN_PERIOD)   motor->oRearLeft = PULSE_MIN_PERIOD;
-	
-	if(motor->oRearRight > PULSE_MAX_PERIOD)	   motor->oRearRight = PULSE_MAX_PERIOD;
-	else if(motor->oRearRight < PULSE_MIN_PERIOD)  motor->oRearRight = PULSE_MIN_PERIOD;
+void printPostPidPeriods(MotorPWM m) {
+	printf("CH1: %d\tCH2: %d\tCH3: %d\tCH4: %d\t\n",
+			(int)m.oFrontLeft,
+			(int)m.oFrontRight,
+			(int)m.oRearLeft,
+			(int)m.oRearRight);
 }

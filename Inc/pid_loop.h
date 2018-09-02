@@ -51,6 +51,6 @@ void startPWM(void);
 void startMotor(void);
 void pid_loop(void);
 static void pidCalculation(uint16_t, uint16_t, uint16_t);
-static void translateSetPoints(void);
+static void convertSetPoints(void);
 inline static void motorLimiter(MotorPWM*);
-static void shutdownProcedure(void);
+void printPostPidPeriods(MotorPWM);
