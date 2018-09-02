@@ -5,91 +5,52 @@
  *      Author: pasindu
  */
 
-/* Define to prevent recursive inclusion -----------------------------*/
 #ifndef pid_loop_H_
 #define pid_loop_H_
 #endif /* pid_loop_H_ */
 
-/* Includes ----------------------------------------------------------*/
 #include "main.h"
 
-/* Struct ------------------------------------------------------------*/
-
-typedef struct receiverData {
-	//rx: raw receiver data
-	float rxRoll;
-	float rxPitch;
-	float rxYaw;
-	
-	//rxp: receiver data to period
-	float rxpRoll;
-	float rxpPitch;
-	float rxpYaw;
-} RxD;
 
 typedef struct PID {
-	
-	uint8_t prevDelay;
-	
-	//  sp: setpoint
-	//Unit: Degrees
+	//Unit: degrees
 	int16_t throttle;
-	int16_t spRoll;
-	int16_t spPitch;
-	int16_t spYaw;
-	
-	//   c: current; 
-	//Unit: degrees
-	float cRoll;
-	float cPitch;
-	float cYaw;
-	
-	//   e: error (sp-c)
-	//Unit: degrees
-	float eRoll;
-	float ePitch;
-	float eYaw;
-	
-	//  pe: previous error
-	//Unit: degrees
-	float peRoll;
-	float pePitch;
-	float peYaw;
-	
-	//  acc: accumilative
-	//Unit: degrees
-	float accRoll;
-	float accPitch;
-	float accYaw;
-	
-	float inteRoll;
-	float intePitch;
-	float inteYaw;
+   	int16_t rollSetPoint;
+	int16_t pitchSetPoint;
+	int16_t yawSetPoint;
 	
 	//Unit: degrees
-	float sumRoll;
-	float sumPitch;
-	float sumYaw;
+	float rollError;
+	float pitchError;
+	float yawError;
 	
-	//Unit: time
-	float tRoll;
-	float tPitch;
-	float tYaw;
+	//Unit: degrees
+	float prevRollError;
+	float prevPitchError;
+	float prevYawError;
 	
-}PID;
+	//Unit: degrees
+	float integratedRollError;
+	float integratedPitchError;
+	float integratedYawError;
+	
+	//Unit: degrees
+	float rollSum;
+	float pitchSum;
+	float yawSum;
+} PID;
 
-//Final output periods
 typedef struct Motor {
 	float oFrontLeft;
 	float oFrontRight;
 	float oRearLeft;
 	float oRearRight;
-}Motor;
+} MotorPWM;
 
 void startPWM(void);
 void startMotor(void);
 void pid_loop(void);
-static void pidCalculation(uint16_t,uint16_t,uint16_t);
-static void pidGetCtrlData(void);
-inline static void motorLimiter(Motor*);
+static void pidCalculation(uint16_t, uint16_t, uint16_t);
+static void translateSetPoints(void);
+inline static void motorLimiter(MotorPWM*);
 static void shutdownProcedure(void);

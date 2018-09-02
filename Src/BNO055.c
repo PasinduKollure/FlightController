@@ -70,23 +70,29 @@ void BNO_I2C_Configure(void){
 	HAL_Delay(500);
 }
 
-void BnoUpdateEuler(BNO* bno){
+void updateEulerAngles(EulerAngles* bno){
 	bno->rawEulerX = ((BNO_I2C_Read(BNO055_EULER_P_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_P_LSB_ADDR));
-	bno->rawEulerX = bno->rawEulerX/16;
+	bno->rawEulerX = bno->rawEulerX / 16;
 	bno->rawEulerY = ((BNO_I2C_Read(BNO055_EULER_R_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_R_LSB_ADDR));
-	bno->rawEulerY = bno->rawEulerY/16;
+	bno->rawEulerY = bno->rawEulerY / 16;
 	bno->rawEulerZ = ((BNO_I2C_Read(BNO055_EULER_H_MSB_ADDR) << 8) | BNO_I2C_Read(BNO055_EULER_H_LSB_ADDR));
-	bno->rawEulerZ = bno->rawEulerZ/16;
+	bno->rawEulerZ = bno->rawEulerZ / 16;
 
-	if(bno->rawEulerX > IMU_MAX_ANGLE) bno->eulerX = IMU_MAX_ANGLE;
-	else if(bno->rawEulerX < -1*IMU_MAX_ANGLE) bno->eulerX = -1*IMU_MAX_ANGLE;
-	else bno->eulerX = bno->rawEulerX;
+	if(bno->rawEulerX > IMU_MAX_ANGLE) 
+		bno->eulerX = IMU_MAX_ANGLE;
+	else if(bno->rawEulerX < -1 * IMU_MAX_ANGLE) 
+		bno->eulerX = -1 * IMU_MAX_ANGLE;
+	else 
+		bno->eulerX = bno->rawEulerX;
 	
-	if(bno->rawEulerY > IMU_MAX_ANGLE) bno->eulerY = IMU_MAX_ANGLE;
-	else if(bno->rawEulerY < -1*IMU_MAX_ANGLE) bno->eulerY = -1*IMU_MAX_ANGLE;
-	else bno->eulerY = bno->rawEulerY;
+	if(bno->rawEulerY > IMU_MAX_ANGLE) 
+		bno->eulerY = IMU_MAX_ANGLE;
+	else if(bno->rawEulerY < -1 * IMU_MAX_ANGLE) 
+		bno->eulerY = -1 * IMU_MAX_ANGLE;
+	else 
+		bno->eulerY = bno->rawEulerY;
 }
 
-void BnoPrintEuler(BNO* bno){
-	printf("X: %d\t Y: %d\t Z: %d\n",bno->eulerX,bno->eulerY,bno->rawEulerZ);
+void BnoPrintEuler(EulerAngles* imu){
+	printf("X: %d\t Y: %d\t Z: %d\n", imu->eulerX, imu->eulerY, imu->rawEulerZ);
 }

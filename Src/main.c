@@ -34,7 +34,7 @@ int main(void)
 	startPWM();
 	startMotor();
 
-	while (1){
+	while(1){
 		pid_loop();
 	}
 }
