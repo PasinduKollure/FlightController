@@ -48,17 +48,13 @@ void pid_loop(void){
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, PULSE_STOP_PERIOD);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, PULSE_STOP_PERIOD);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, PULSE_STOP_PERIOD);
-		
 	}
 	else {
-		// pidCalculation(pid.pitchSetPoint, pid.rollSetPoint, pid.yawSetPoint);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor.oFrontLeft);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, motor.oFrontRight);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, motor.oRearLeft);
 		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, motor.oRearRight);
 	}
-	
-	printPostPidPeriods(motor);
 }
 
 static void pidCalculation(uint16_t pitchSetPoint, uint16_t rollSetPoint, uint16_t yawSetPoint) {
