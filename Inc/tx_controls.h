@@ -18,13 +18,6 @@
 #define BYTE_TO_WORD(MSB,LSB) ((MSB << 8) | LSB)
 #define iBUS_HEADER 16416
 
-/*
-ctrlData[0]: Header
-ctrlData[1]: Yaw
-ctrlData[2]: Pitch
-ctrlData[3]: Throttle
-ctrlData[4]: Roll
-*/
 #define HEADER_INDEX 0
 #define YAW_INDEX 1
 #define PITCH_INDEX 2
