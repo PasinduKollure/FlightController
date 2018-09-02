@@ -14,12 +14,26 @@
 #endif /* tx_decoder_H_ */
 
 #define BYTE_COUNT 32
-#define WORD_COUNT (BYTE_COUNT/2)
-#define TURNIGY_HEADER 16416
-#define BYTE2WORD(MSB,LSB) ((MSB<<8) | LSB)
+#define WORD_COUNT (BYTE_COUNT / 2)
+#define BYTE_TO_WORD(MSB,LSB) ((MSB << 8) | LSB)
 #define iBUS_HEADER 16416
+
+/*
+ctrlData[0]: Header
+ctrlData[1]: Yaw
+ctrlData[2]: Pitch
+ctrlData[3]: Throttle
+ctrlData[4]: Roll
+*/
+#define HEADER_INDEX 0
+#define YAW_INDEX 1
+#define PITCH_INDEX 2
+#define THROTTLE_INDEX 3
+#define ROLL_INDEX 4
 
 typedef struct TurnigyData {
 	uint8_t rawData[BYTE_COUNT];
 	uint16_t ctrlData[WORD_COUNT];
 } TxCtrlData;
+
+void printControlData(void);

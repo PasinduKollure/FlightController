@@ -23,12 +23,20 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	
 	UNUSED(huart);
 	
-	for(int i=0; i<WORD_COUNT; i++)
+	for(int i=0; i < WORD_COUNT; i++)
 		turnigy.ctrlData[i] = turnigy.rawData[i*2+1] << 8 | turnigy.rawData[i*2];
 		
-	if(turnigy.ctrlData[3] < PULSE_MIN_PERIOD){
+	if(turnigy.ctrlData[THROTTLE_INDEX] < PULSE_MIN_PERIOD){
 		fault.shutdown = 1;
 	}else{
 		fault.shutdown = 0;
 	}
+}
+
+void printControlData(void) {
+	printf("Throttle: %d\tRoll: %d\tPitch: %d\tYaw: %d\t\n",
+		turnigy.ctrlData[THROTTLE_INDEX],
+		turnigy.ctrlData[ROLL_INDEX],
+		turnigy.ctrlData[PITCH_INDEX],
+		turnigy.ctrlData[YAW_INDEX]);
 }
